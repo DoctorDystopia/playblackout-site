@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "playblackout-site",
+  "compatibility_date": "2026-08-21",
+
+  // Purely static: no `main` worker script. Wrangler serves ./dist directly.
+  // Add "main" + an ASSETS binding later if the site ever needs SSR.
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page"
+  }
+}

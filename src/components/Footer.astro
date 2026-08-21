@@ -1,0 +1,18 @@
+---
+import { SITE, DISCORD_URL, GITHUB_URL } from "../config";
+
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-24 border-t border-edge/70">
+  <div
+    class="mx-auto flex max-w-5xl flex-col gap-4 px-6 py-10 text-sm text-ink-faint sm:flex-row sm:items-center sm:justify-between"
+  >
+    <p>&copy; {year} {SITE.name}. Built in the open.</p>
+    <div class="flex gap-5">
+      <a href={DISCORD_URL} class="transition hover:text-signal">Discord</a>
+      <a href={GITHUB_URL} class="transition hover:text-signal">GitHub</a>
+      <a href="/blog/rss.xml" class="transition hover:text-signal">RSS</a>
+    </div>
+  </div>
+</footer>

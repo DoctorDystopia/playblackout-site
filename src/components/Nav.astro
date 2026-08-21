@@ -1,0 +1,46 @@
+---
+import { SITE, NAV_LINKS } from "../config";
+
+const { pathname } = Astro.url;
+---
+
+<header
+  class="sticky top-0 z-50 border-b border-edge/70 bg-void/80 backdrop-blur-md"
+>
+  <nav
+    class="mx-auto flex max-w-5xl items-center justify-between px-6 py-4"
+    aria-label="Main"
+  >
+    <a
+      href="/"
+      class="group flex items-center gap-2.5 font-display text-lg font-semibold tracking-tight text-ink"
+    >
+      <span
+        class="inline-block h-2 w-2 rounded-full bg-signal shadow-[0_0_10px_var(--color-signal)] transition group-hover:bg-flare group-hover:shadow-[0_0_10px_var(--color-flare)]"
+        aria-hidden="true"></span>
+      {SITE.name}
+    </a>
+
+    <ul class="flex items-center gap-1 text-sm">
+      {
+        NAV_LINKS.map((link) => {
+          const isActive = pathname === link.href || pathname.startsWith(link.href + "/");
+          return (
+            <li>
+              <a
+                href={link.href}
+                aria-current={isActive ? "page" : undefined}
+                class:list={[
+                  "rounded-md px-3 py-2 transition hover:text-ink",
+                  isActive ? "text-signal" : "text-ink-dim",
+                ]}
+              >
+                {link.label}
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </nav>
+</header>

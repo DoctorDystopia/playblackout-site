@@ -1,0 +1,21 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base title="404" description="That address does not resolve.">
+  <section class="mx-auto flex max-w-2xl flex-col items-start px-6 py-32">
+    <p class="font-mono text-xs uppercase tracking-[0.25em] text-flare">Error 404</p>
+    <h1 class="mt-4 text-4xl font-bold tracking-tight text-ink sm:text-5xl">
+      That address does not resolve.
+    </h1>
+    <p class="mt-4 text-lg text-ink-dim">
+      Dead link, moved page, or a district that was never built. Happens.
+    </p>
+    <a
+      href="/"
+      class="mt-9 rounded-md bg-signal px-6 py-3 font-display font-semibold text-void transition hover:bg-ink"
+    >
+      Back to the surface
+    </a>
+  </section>
+</Base>

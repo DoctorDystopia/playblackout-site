@@ -1,0 +1,156 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../layouts/Base.astro";
+import { SITE, GAME_URL, DISCORD_URL } from "../config";
+
+const posts = (await getCollection("blog", ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+
+const pillars = [
+  {
+    title: "No install",
+    body: "Runs in the browser over a websocket. Open a tab, make a character, you're in the city.",
+  },
+  {
+    title: "Skills, not classes",
+    body: "127 levels across every skill line. Train what you use. Nothing is locked behind a pick you made at signup.",
+  },
+  {
+    title: "Real crafting",
+    body: "Foundry work, metalsmithing, and a recipe tree that expects you to source your own materials.",
+  },
+  {
+    title: "Combat with maths behind it",
+    body: "Accuracy, defence, and damage roll against each other every tick. The formulas are published, not hidden.",
+  },
+];
+---
+
+<Base>
+  <!-- Hero -->
+  <section class="scanlines relative overflow-hidden border-b border-edge/70">
+    <div
+      class="pointer-events-none absolute -top-40 left-1/2 h-96 w-[42rem] -translate-x-1/2 rounded-full bg-signal/10 blur-[120px]"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="relative mx-auto max-w-5xl px-6 py-28 sm:py-36">
+      <p class="mb-5 font-mono text-xs uppercase tracking-[0.25em] text-signal">
+        {SITE.tagline}
+      </p>
+
+      <h1
+        class="max-w-3xl text-5xl font-bold leading-[1.05] tracking-tight text-ink sm:text-7xl"
+      >
+        The grid went dark.<br />
+        <span class="text-ink-dim">Something is still running.</span>
+      </h1>
+
+      <p class="mt-7 max-w-xl text-lg leading-relaxed text-ink-dim">
+        {SITE.description}
+      </p>
+
+      <div class="mt-10 flex flex-wrap items-center gap-4">
+        <a
+          href="/play"
+          class="rounded-md bg-signal px-6 py-3 font-display font-semibold text-void transition hover:bg-ink"
+        >
+          Jack in
+        </a>
+        <a
+          href="/blog"
+          class="rounded-md border border-edge px-6 py-3 font-display font-semibold text-ink-dim transition hover:border-signal hover:text-signal"
+        >
+          Read the devlog
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pillars -->
+  <section class="mx-auto max-w-5xl px-6 py-20">
+    <div class="grid gap-px overflow-hidden rounded-lg border border-edge bg-edge sm:grid-cols-2">
+      {
+        pillars.map((pillar) => (
+          <div class="bg-surface p-7">
+            <h2 class="font-display text-lg font-semibold text-ink">{pillar.title}</h2>
+            <p class="mt-2.5 text-sm leading-relaxed text-ink-dim">{pillar.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Latest devlog -->
+  {
+    posts.length > 0 && (
+      <section class="mx-auto max-w-5xl px-6 pb-20">
+        <div class="mb-8 flex items-baseline justify-between">
+          <h2 class="font-display text-2xl font-semibold text-ink">From the devlog</h2>
+          <a href="/blog" class="text-sm text-ink-faint transition hover:text-signal">
+            All posts &rarr;
+          </a>
+        </div>
+
+        <ul class="space-y-px overflow-hidden rounded-lg border border-edge bg-edge">
+          {posts.map((post) => (
+            <li>
+              <a
+                href={`/blog/${post.id}`}
+                class="group flex flex-col gap-1 bg-surface p-6 transition hover:bg-surface-2"
+              >
+                <time
+                  datetime={post.data.date.toISOString()}
+                  class="font-mono text-xs text-ink-faint"
+                >
+                  {post.data.date.toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                    timeZone: "UTC",
+                  })}
+                </time>
+                <h3 class="font-display text-lg font-semibold text-ink transition group-hover:text-signal">
+                  {post.data.title}
+                </h3>
+                <p class="text-sm text-ink-dim">{post.data.description}</p>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  <!-- Closing CTA -->
+  <section class="mx-auto max-w-5xl px-6 pb-24">
+    <div
+      class="flex flex-col items-start gap-6 rounded-lg border border-edge bg-surface p-10 sm:flex-row sm:items-center sm:justify-between"
+    >
+      <div>
+        <h2 class="font-display text-xl font-semibold text-ink">
+          The city is small right now.
+        </h2>
+        <p class="mt-1.5 text-sm text-ink-dim">
+          Early players shape what gets built next. Come argue about it.
+        </p>
+      </div>
+      <div class="flex shrink-0 gap-3">
+        <a
+          href={DISCORD_URL}
+          class="rounded-md border border-edge px-5 py-2.5 text-sm font-semibold text-ink-dim transition hover:border-signal hover:text-signal"
+        >
+          Discord
+        </a>
+        <a
+          href={GAME_URL}
+          class="rounded-md bg-signal px-5 py-2.5 text-sm font-semibold text-void transition hover:bg-ink"
+        >
+          Play now
+        </a>
+      </div>
+    </div>
+  </section>
+</Base>

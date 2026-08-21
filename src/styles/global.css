@@ -1,0 +1,128 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Blackout design tokens.
+   One owner per fact: change a colour here, never in a component.
+   --------------------------------------------------------------------------- */
+@theme {
+  --color-void: #07080b;
+  --color-surface: #0e1016;
+  --color-surface-2: #151822;
+  --color-edge: #232838;
+
+  --color-ink: #e4e7ee;
+  --color-ink-dim: #98a0b3;
+  --color-ink-faint: #626b80;
+
+  --color-signal: #37e0d8;
+  --color-signal-dim: #1c8f8a;
+  --color-flare: #ff4d8d;
+  --color-amber: #f0a202;
+
+  --font-display: "Chakra Petch", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", monospace;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--color-void);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+
+  ::selection {
+    background-color: var(--color-signal);
+    color: var(--color-void);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-signal);
+    outline-offset: 3px;
+  }
+}
+
+@layer components {
+  /* Faint scanline wash used behind the hero. Decorative only. */
+  .scanlines::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.025) 0px,
+      rgba(255, 255, 255, 0.025) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+  }
+
+  .prose-blackout {
+    color: var(--color-ink-dim);
+    line-height: 1.75;
+  }
+  .prose-blackout h2 {
+    color: var(--color-ink);
+    font-size: 1.5rem;
+    margin-top: 2.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .prose-blackout h3 {
+    color: var(--color-ink);
+    font-size: 1.2rem;
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+  }
+  .prose-blackout p { margin-bottom: 1.25rem; }
+  .prose-blackout a {
+    color: var(--color-signal);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .prose-blackout ul {
+    list-style: disc;
+    padding-left: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+  .prose-blackout li { margin-bottom: 0.4rem; }
+  .prose-blackout code {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-edge);
+    border-radius: 0.25rem;
+    padding: 0.1rem 0.35rem;
+  }
+  .prose-blackout pre {
+    background: var(--color-surface);
+    border: 1px solid var(--color-edge);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    overflow-x: auto;
+    margin-bottom: 1.25rem;
+  }
+  .prose-blackout pre code {
+    background: none;
+    border: none;
+    padding: 0;
+  }
+  .prose-blackout blockquote {
+    border-left: 2px solid var(--color-signal-dim);
+    padding-left: 1rem;
+    color: var(--color-ink-faint);
+    font-style: italic;
+    margin-bottom: 1.25rem;
+  }
+}

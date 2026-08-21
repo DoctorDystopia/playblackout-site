@@ -1,0 +1,72 @@
+---
+import Base from "../layouts/Base.astro";
+import { GAME_URL, DISCORD_URL } from "../config";
+
+const steps = [
+  "Click the button. The client opens in a new tab — nothing to download.",
+  "Type `create <name> <password>` to make an account, then `connect <name> <password>`.",
+  "Type `look` to see where you are, and `help` for the command list.",
+];
+---
+
+<Base
+  title="Play"
+  description="Play Blackout in your browser. No download, no install — the client runs over a websocket."
+>
+  <section class="mx-auto max-w-2xl px-6 py-20">
+    <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl">Jack in</h1>
+    <p class="mt-4 text-lg text-ink-dim">
+      Blackout runs entirely in your browser. There is no launcher and no account
+      to make on this site — your character <em>is</em> your account.
+    </p>
+
+    <a
+      href={GAME_URL}
+      class="mt-10 flex items-center justify-between gap-4 rounded-lg border border-signal/40 bg-surface p-6 transition hover:border-signal hover:bg-surface-2"
+    >
+      <span>
+        <span class="block font-display text-xl font-semibold text-signal">
+          Open the client
+        </span>
+        <span class="mt-1 block font-mono text-xs text-ink-faint">
+          game.playblackout.io
+        </span>
+      </span>
+      <span class="text-2xl text-signal" aria-hidden="true">&rarr;</span>
+    </a>
+
+    <h2 class="mt-16 font-display text-xl font-semibold text-ink">First two minutes</h2>
+    <ol class="mt-5 space-y-4">
+      {
+        steps.map((step, i) => (
+          <li class="flex gap-4">
+            <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-edge font-mono text-xs text-signal">
+              {i + 1}
+            </span>
+            <span class="text-ink-dim" set:html={step.replace(/`([^`]+)`/g, '<code class="rounded border border-edge bg-surface-2 px-1.5 py-0.5 font-mono text-sm text-ink">$1</code>')} />
+          </li>
+        ))
+      }
+    </ol>
+
+    <div class="mt-14 rounded-lg border border-edge bg-surface p-6">
+      <h2 class="font-display text-lg font-semibold text-ink">Server offline?</h2>
+      <p class="mt-2 text-sm leading-relaxed text-ink-dim">
+        Blackout is in active development and the game server occasionally restarts
+        for updates. If the client will not connect, check
+        <a href={DISCORD_URL} class="text-signal underline underline-offset-2">Discord</a>
+        — outages get posted there first.
+      </p>
+    </div>
+
+    <div class="mt-8 rounded-lg border border-edge bg-surface p-6">
+      <h2 class="font-display text-lg font-semibold text-ink">Prefer a real MUD client?</h2>
+      <p class="mt-2 text-sm leading-relaxed text-ink-dim">
+        Mudlet, TinTin++, and MUSHclient all work. Point them at
+        <code class="rounded border border-edge bg-surface-2 px-1.5 py-0.5 font-mono text-xs text-ink"
+          >game.playblackout.io</code
+        > on the telnet port.
+      </p>
+    </div>
+  </section>
+</Base>

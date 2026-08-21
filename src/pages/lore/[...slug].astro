@@ -1,0 +1,24 @@
+---
+import { getCollection, render } from "astro:content";
+import Post from "../../layouts/Post.astro";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("lore", ({ data }) => !data.draft);
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<Post
+  title={entry.data.title}
+  description={entry.data.description}
+  backHref="/lore"
+  backLabel="The world"
+>
+  <Content />
+</Post>
