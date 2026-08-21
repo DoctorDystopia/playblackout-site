@@ -6,7 +6,7 @@ tags: ["combat", "engine"]
 draft: true
 ---
 
-> This post is a draft stub. Replace it or delete it.
+> Placeholder.
 
 Blackout's combat resolves on a fixed 0.6 second tick. Getting that interval was
 harder than it sounds.
@@ -19,4 +19,4 @@ The answer was a Twisted `LoopingCall` owned by a single tick engine, with every
 combat entity registering against one clock rather than each carrying its own
 timer.
 
-Fill this in with the details when you're ready to publish.
+[TBD]
