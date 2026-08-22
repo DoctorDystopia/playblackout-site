@@ -1,10 +1,8 @@
 ---
-import { getCollection } from "astro:content";
+import { getLore } from "../../lib/content";
 import Base from "../../layouts/Base.astro";
 
-const entries = (await getCollection("lore", ({ data }) => !data.draft)).sort(
-  (a, b) => a.data.order - b.data.order,
-);
+const entries = await getLore();
 ---
 
 <Base

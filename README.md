@@ -28,24 +28,10 @@ npm run preview    # serve ./dist exactly as the Worker will
 
 ## Writing a post
 
-Add a markdown file to `src/content/blog/`. Frontmatter is schema-checked in
-`src/content.config.ts`, so a typo fails the build instead of shipping broken:
+See **[docs/authoring.md](docs/authoring.md)** — the full guide to publishing
+posts, adding pages and sections, changing the design, and what the deploy does.
 
-```markdown
----
-title: "Post title"
-description: "One sentence. Used for the card and the OG tag."
-date: 2026-08-21
-tags: ["combat", "engine"]
-draft: false
----
-```
-
-`draft: true` keeps a post out of the build, the index, and the RSS feed.
-Worldbuilding pages work the same way in `src/content/lore/`, ordered by an
-`order:` number instead of a date.
-
-Push to `main` and Cloudflare rebuilds. Push any other branch for a preview URL.
+Short version: add a markdown file to `src/content/blog/`, `git push`, done.
 
 ## Layout
 

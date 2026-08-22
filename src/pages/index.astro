@@ -1,11 +1,9 @@
 ---
-import { getCollection } from "astro:content";
+import { getPosts } from "../lib/content";
 import Base from "../layouts/Base.astro";
 import { SITE, GAME_URL, DISCORD_URL } from "../config";
 
-const posts = (await getCollection("blog", ({ data }) => !data.draft))
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, 3);
+const posts = (await getPosts()).slice(0, 3);
 
 const pillars = [
   {

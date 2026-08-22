@@ -1,9 +1,10 @@
 ---
-import { getCollection, render } from "astro:content";
+import { render } from "astro:content";
+import { getLore } from "../../lib/content";
 import Post from "../../layouts/Post.astro";
 
 export async function getStaticPaths() {
-  const entries = await getCollection("lore", ({ data }) => !data.draft);
+  const entries = await getLore();
   return entries.map((entry) => ({
     params: { slug: entry.id },
     props: { entry },
