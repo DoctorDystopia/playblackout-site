@@ -1,6 +1,6 @@
 ---
 title: "Oasis"
-description: "Green, quiet, has a funny little android too."
+description: "a funny little android lives here."
 order: 2
 ---
 
