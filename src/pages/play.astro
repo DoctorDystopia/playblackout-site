@@ -3,9 +3,13 @@ import Base from "../layouts/Base.astro";
 import { GAME_URL, DISCORD_URL } from "../config";
 
 const steps = [
-  "Click the button. The client opens in a new tab — nothing to download.",
+  "Click the button. The client opens in a new tab, nothing downloads.",
   "Type `create <name> <password>` to make an account, then `connect <name> <password>`.",
-  "Type `look` to see where you are, and `help` for the command list.",
+  "Type `look` to see where you are, and `help` for the command list (look for "Blackout:" prefix).",
+  "Click the small cog top left of window pane to see Options.",
+  "Can open the 3D client in the Options menu.",
+  "Can open the 3D inventory pane in the Options menu.",
+  "WASDQEZC keys and click for movement.",
 ];
 ---
 
@@ -17,7 +21,7 @@ const steps = [
     <h1 class="text-4xl font-bold tracking-tight text-ink sm:text-5xl">Jack in</h1>
     <p class="mt-4 text-lg text-ink-dim">
       Blackout runs entirely in your browser. There is no launcher and no account
-      to make on this site — your character <em>is</em> your account.
+      to make on this site. Your character <em>is</em> your account.
     </p>
 
     <a
@@ -35,7 +39,7 @@ const steps = [
       <span class="text-2xl text-signal" aria-hidden="true">&rarr;</span>
     </a>
 
-    <h2 class="mt-16 font-display text-xl font-semibold text-ink">First two minutes</h2>
+    <h2 class="mt-16 font-display text-xl font-semibold text-ink">First few minutes</h2>
     <ol class="mt-5 space-y-4">
       {
         steps.map((step, i) => (
@@ -53,9 +57,7 @@ const steps = [
       <h2 class="font-display text-lg font-semibold text-ink">Server offline?</h2>
       <p class="mt-2 text-sm leading-relaxed text-ink-dim">
         Blackout is in active development and the game server occasionally restarts
-        for updates. If the client will not connect, check
-        <a href={DISCORD_URL} class="text-signal underline underline-offset-2">Discord</a>
-        — outages get posted there first.
+        for updates. If the client will not connect, just wait a few minutes...or hours.
       </p>
     </div>
 

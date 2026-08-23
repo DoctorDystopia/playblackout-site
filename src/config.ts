@@ -7,7 +7,7 @@ export const SITE = {
   name: "Blackout",
   tagline: "A cyberpunk MUD",
   description:
-    "Blackout is a text-based (with experimental 3D webclient) cyberpunk MUD. Play from your browser. No download, no client (yet), no install.",
+    "Blackout is a text-based (with experimental 3D webclient) cyberpunk Multi-User Dungeon (MUD). Play from your browser. No download, no client (yet), no install.",
   url: "https://playblackout.io",
 } as const;
 
