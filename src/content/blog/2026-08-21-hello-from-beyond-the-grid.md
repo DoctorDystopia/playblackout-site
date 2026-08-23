@@ -1,5 +1,5 @@
 ---
-title: "Hello from Blackout!"
+title: "Hello world!"
 description: "Blackout now has a front door. Here's what's running behind it, and what's coming next."
 date: 2026-08-21
 tags: ["meta", "infrastructure"]
@@ -28,8 +28,11 @@ Built on the Evennia engine. The world of Blackout is a sandbox. Be who you want
 - More of everything
 - Whatever the first handful of players complain about loudest
 
-If you want to poke at it, the client is [right here](/play). It is early. Things
-will break.
+If you want to poke at it, the client is [right here](/play).
+Expect frequent server resets (that means character wipes, etc.).
+It is early. Things will break.
+
+Who will you be in Neo Cairo?
 
 Have fun!
 
