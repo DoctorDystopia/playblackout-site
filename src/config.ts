@@ -1,8 +1,8 @@
 /**
  * Purpose:  Single source of truth for site-wide constants.
- * Notes:    Hostnames live here and nowhere else. If the game client ever
- *           or the client moves, this is the only edit. They are two
- *           different origins now and deliberately so -- see GAME_URL.
+ * Notes:    Hostnames live here and nowhere else. If the game server or the
+ *           client moves, this is the only edit. They are two different
+ *           origins now and deliberately so -- see GAME_URL.
  */
 export const SITE = {
   name: "Blackout",
@@ -26,7 +26,13 @@ export const SITE = {
  * served from here means the client asks for its art relatively and never
  * crosses an origin at all.
  *
- * REQUIRES THE EXPORT TO BE DEPLOYED HERE FIRST. See
+ * The path is served by `worker/index.ts` out of the `playblackout-assets` R2
+ * bucket, NOT by the static assets in `dist/` -- `index.wasm` is 37.7 MiB and
+ * Cloudflare caps an individual static asset at 25 MiB on every plan it sells.
+ * The worker is what keeps the bucket on this origin, since an R2 custom domain
+ * binds a whole hostname and a hostname is what "same-origin" would lose.
+ *
+ * REQUIRES THE EXPORT TO BE IN THAT BUCKET FIRST. See
  * `muddev/deploy/webexport/README.md`. Publishing this site before that lands
  * points /play at a 404.
  */

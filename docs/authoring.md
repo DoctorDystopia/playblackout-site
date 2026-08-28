@@ -277,11 +277,15 @@ npm clean-install
 npm run build          <- set in the dashboard, not in the repo
         |
         v
-npx wrangler deploy    <- uploads ./dist
+npx wrangler deploy    <- uploads ./dist + worker/index.ts
         |
         v
 live on playblackout.io
 ```
+
+This publishes the **site**. It does not publish the game client — that lives in
+an R2 bucket and is uploaded from `muddev` by `deploy/webexport/publish.ps1`.
+Writing a post never touches it.
 
 Push to **any other branch** for a preview URL — the build runs but production is
 untouched. Good for a redesign you want to look at before committing to it.
@@ -358,6 +362,10 @@ npx astro dev stop
 
 - **`dist/` is gitignored on purpose.** Cloudflare builds it. Committing build
   output causes merge conflicts on every push and gains nothing.
+- **Never put the Godot export under `public/`.** Astro copies `public/`
+  verbatim into `dist/`, and Cloudflare rejects any static asset over 25 MiB —
+  `index.wasm` is 37.7 MiB, so the whole deploy fails, not just that file. The
+  client is served from R2 by `worker/index.ts`; see the repo README.
 - **`SITE.description` appears in two places** — the paragraph under the hero
   *and* every page's meta description. Search results truncate around 155
   characters, so if you want long hero copy, split it into a separate field.

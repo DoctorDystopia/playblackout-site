@@ -1,12 +1,42 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "playblackout-site",
-  "compatibility_date": "2026-08-21",
-
-  // Purely static: no `main` worker script. Wrangler serves ./dist directly.
-  // Add "main" + an ASSETS binding later if the site ever needs SSR.
-  "assets": {
-    "directory": "./dist",
-    "not_found_handling": "404-page"
-  }
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "playblackout-site",
+	"compatibility_date": "2026-08-21",
+	"main": "worker/index.ts",
+	"assets": {
+		"directory": "./dist",
+		"binding": "ASSETS",
+		"not_found_handling": "404-page",
+		// The Godot client and its models are too big to be static assets --
+		// index.wasm alone is 37.7 MiB against a hard 25 MiB per-file cap on every
+		// Cloudflare plan. They live in R2 instead, and the worker below serves
+		// them at these paths so they stay SAME-ORIGIN with the page. Listing them
+		// here makes the worker authoritative for these prefixes rather than
+		// leaving it to the asset router's miss behaviour.
+		//
+		// EACH PREFIX IS LISTED TWICE, with and without the trailing slash. A glob
+		// of `/client/*` does not match a bare `/client`, and a path that misses
+		// here never reaches the worker at all -- `not_found_handling` answers it
+		// with the 404 page first. Measured: the worker's redirect from `/client`
+		// to `/client/` was dead code until the slash-less entry existed, and
+		// `/client` is the URL a player is most likely to type by hand.
+		"run_worker_first": [
+			"/client",
+			"/client/*",
+			"/static/webclient/models",
+			"/static/webclient/models/*"
+		]
+	},
+	// ONE binding, not two. `wrangler r2 bucket create` offers to wire the new
+	// bucket up for you, and taking that offer adds a second binding to the same
+	// bucket -- `playblackout_assets` alongside this one. The worker reads
+	// `env.ASSET_STORE`, nothing reads the other, and two names for one bucket is
+	// the kind of thing a reader later assumes is meaningful. Decline the offer,
+	// or delete what it adds.
+	"r2_buckets": [
+		{
+			"binding": "ASSET_STORE",
+			"bucket_name": "playblackout-assets"
+		}
+	]
 }

@@ -9,6 +9,11 @@ node_modules/
 .wrangler/
 .dev.vars
 
+# Generated from the bindings in wrangler.jsonc by `wrangler types`, which
+# `npm run check` runs first. 15k lines of runtime declarations that change with
+# every wrangler bump and that nothing reads but the type checker.
+worker-configuration.d.ts
+
 # environment
 .env
 .env.production
@@ -23,3 +28,17 @@ yarn-error.log*
 .idea/
 .DS_Store
 Thumbs.db
+
+# The Godot client export and the model tree it fetches.
+#
+# NEITHER IS PART OF THIS SITE'S BUILD. They live in the `playblackout-assets`
+# R2 bucket and are served by `worker/index.ts` at `/client/*` and
+# `/static/webclient/models/*` -- because `index.wasm` is 37.7 MiB against
+# Cloudflare's hard 25 MiB per-file cap on static assets, which no plan lifts.
+#
+# So putting an export under `public/` does nothing for a deploy: Astro would
+# copy it into `dist/` and wrangler would reject the upload. Publish both with
+# `muddev/deploy/webexport/publish.ps1` instead. These rules exist only so a
+# stray local export cannot be committed by accident.
+public/client/
+public/static/
