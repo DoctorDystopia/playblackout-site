@@ -1,15 +1,15 @@
 ---
 import Base from "../layouts/Base.astro";
-import { GAME_URL, DISCORD_URL } from "../config";
+import { GAME_URL, LEGACY_CLIENT_URL, DISCORD_URL } from "../config";
 
 const steps = [
-  "Click the button. The client opens in a new tab, nothing downloads.",
-  "Type `create <name> <password>` to make an account, then `connect <name> <password>`.",
-  'Type `look` to see where you are, and `help` for the command list (look for "Blackout:" prefix).',
-  "Click the small cog top left of window pane to see Options.",
-  "Can open the 3D client in the Options menu.",
-  "Can open the 3D inventory pane in the Options menu.",
-  "WASDQEZC keys and click for movement.",
+  "Click the button. The client opens in a new tab and loads itself once, then starts.",
+  "Use the form at the top of the text column: pick a name and a password, then Create. Connect if you already have one. On a locked-down browser the Paste button fills the password field.",
+  'Type `look` to see where you are, and `help` for the command list (look for the "Blackout:" prefix).',
+  "Click a tile in the 3D pane to walk there. Click an NPC to attack it, an item to pick it up, a gathering node to cut it — whatever the game says you can do with a thing is what clicking it does.",
+  "Press Escape to hand the keyboard to the map and move with the movement keys; Enter gives it back to the input. The input box tells you which mode you are in.",
+  "Drag an inventory cell onto another to swap, onto a body slot to equip, off one to unequip. Right-click a cell for that item’s own actions.",
+  "Character, Options and ? are buttons above the log. Ctrl+F searches the log. 3D hides both panes if you would rather play it as plain text.",
 ];
 ---
 
@@ -33,7 +33,7 @@ const steps = [
           Open the client
         </span>
         <span class="mt-1 block font-mono text-xs text-ink-faint">
-          game.playblackout.io
+          playblackout.io/client
         </span>
       </span>
       <span class="text-2xl text-signal" aria-hidden="true">&rarr;</span>
@@ -58,6 +58,16 @@ const steps = [
       <p class="mt-2 text-sm leading-relaxed text-ink-dim">
         Blackout is in active development and the game server occasionally restarts
         for updates. If the client will not connect, just wait a few minutes...or hours.
+      </p>
+    </div>
+
+    <div class="mt-8 rounded-lg border border-edge bg-surface p-6">
+      <h2 class="font-display text-lg font-semibold text-ink">If the 3D client will not start</h2>
+      <p class="mt-2 text-sm leading-relaxed text-ink-dim">
+        It needs WebGL2, and a browser without it gets a blank page rather than a
+        polite error. The <a class="text-signal underline" href={LEGACY_CLIENT_URL}>older
+        browser client</a> is still running and still playable &mdash; its 3D panes are
+        optional, so it works where this one does not.
       </p>
     </div>
 
