@@ -52,6 +52,26 @@ export const DISCORD_URL = "https://discord.gg/REPLACE-ME";
 
 export const GITHUB_URL = "https://github.com/DoctorDystopia/muddev";
 
+/**
+ * The brand mark, and the two sizes the site actually draws it at.
+ *
+ * TWO FILES, not one scaled by the browser. The nav mark is on every page and
+ * the hero mark is seventeen times its byte count, so serving the large one
+ * into a 32px box would put 170 KB on every navigation to save one file.
+ *
+ * The source art is a diamond on a PURE BLACK field; what ships here has that
+ * field removed and nothing else, so the mark sits on `--color-surface` as
+ * cleanly as on `--color-void`. Its own interior is black too, which is why
+ * the field was cut by connectivity rather than by colour -- see
+ * `docs/brand-mark.md`.
+ */
+export const BRAND_MARK = {
+  small: "/brand/blackout-mark-96.png",
+  large: "/brand/blackout-mark-640.png",
+  /** Used only where the mark stands alone; beside the wordmark it is decorative. */
+  alt: "The Blackout sigil: a cybernetic jackal's head, trailing cable, set in a red diamond.",
+} as const;
+
 export const NAV_LINKS = [
   { href: "/blog", label: "Devlog" },
   { href: "/lore", label: "World" },

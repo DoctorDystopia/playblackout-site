@@ -25,6 +25,7 @@ restarts. It is also the main limit — see [What static can't do](#what-static-
 | 404 page | `src/pages/404.astro` |
 | Footer | `src/components/Footer.astro` |
 | Colours, fonts, spacing | `@theme` block in `src/styles/global.css` |
+| The brand mark, and the sizes it ships in | `src/config.ts` → `BRAND_MARK`; see [brand-mark.md](brand-mark.md) |
 | Which posts are visible, and their order | `src/lib/content.ts` |
 | Allowed frontmatter fields | `src/content.config.ts` |
 

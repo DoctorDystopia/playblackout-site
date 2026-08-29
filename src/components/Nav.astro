@@ -1,5 +1,5 @@
 ---
-import { SITE, NAV_LINKS } from "../config";
+import { BRAND_MARK, SITE, NAV_LINKS } from "../config";
 
 const { pathname } = Astro.url;
 ---
@@ -15,9 +15,14 @@ const { pathname } = Astro.url;
       href="/"
       class="group flex items-center gap-2.5 font-display text-lg font-semibold tracking-tight text-ink"
     >
-      <span
-        class="inline-block h-2 w-2 rounded-full bg-signal shadow-[0_0_10px_var(--color-signal)] transition group-hover:bg-flare group-hover:shadow-[0_0_10px_var(--color-flare)]"
-        aria-hidden="true"></span>
+      <img
+        src={BRAND_MARK.small}
+        alt=""
+        aria-hidden="true"
+        width="32"
+        height="32"
+        class="h-8 w-8 shrink-0 transition duration-200 group-hover:brightness-110 group-hover:drop-shadow-[0_0_8px_rgba(170,12,18,0.85)]"
+      />
       {SITE.name}
     </a>
 

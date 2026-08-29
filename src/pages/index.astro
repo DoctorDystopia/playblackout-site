@@ -1,7 +1,7 @@
 ---
 import { getPosts } from "../lib/content";
 import Base from "../layouts/Base.astro";
-import { SITE, GAME_URL, DISCORD_URL } from "../config";
+import { BRAND_MARK, SITE, GAME_URL, DISCORD_URL } from "../config";
 
 const posts = (await getPosts()).slice(0, 3);
 
@@ -34,7 +34,33 @@ const pillars = [
     >
     </div>
 
-    <div class="relative mx-auto max-w-5xl px-6 py-28 sm:py-36">
+    {/* Padding trimmed from `py-28 sm:py-36`: that rhythm was set when the
+        hero opened on the tagline, and the mark above it now contributes its
+        own 240px. Left alone, the Play button fell below the fold on a
+        1280x900 window. */}
+    <div class="relative mx-auto max-w-5xl px-6 py-16 sm:py-20">
+      {/*
+        ABOVE the headline rather than beside it. A second column was tried
+        first and the container is what refuses it: the hero is capped at
+        `max-w-5xl`, and "The grid went dark." at `text-7xl` already wants most
+        of that width, so any mark large enough to be worth showing forces the
+        headline down a size or two. Stacking keeps every type decision on this
+        page untouched and still gives the mark 240px.
+
+        `eager` + `high` because it is the largest thing above the fold; left to
+        the default it is fetched after the fonts and pops in late.
+      */}
+      <img
+        src={BRAND_MARK.large}
+        alt={BRAND_MARK.alt}
+        width="640"
+        height="640"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+        class="mb-8 w-40 drop-shadow-[0_0_55px_rgba(126,0,1,0.5)] sm:w-52 lg:w-60"
+      />
+
       <p class="mb-5 font-mono text-xs uppercase tracking-[0.25em] text-signal">
         {SITE.tagline}
       </p>
