@@ -1,6 +1,6 @@
 ---
 import Base from "../layouts/Base.astro";
-import { GAME_URL, LEGACY_CLIENT_URL, DISCORD_URL } from "../config";
+import { GAME_URL, DISCORD_URL } from "../config";
 
 const steps = [
   "Click the button. The client opens in a new tab and loads itself once, then starts.",
@@ -58,16 +58,6 @@ const steps = [
       <p class="mt-2 text-sm leading-relaxed text-ink-dim">
         Blackout is in active development and the game server occasionally restarts
         for updates. If the client will not connect, just wait a few minutes...or hours.
-      </p>
-    </div>
-
-    <div class="mt-8 rounded-lg border border-edge bg-surface p-6">
-      <h2 class="font-display text-lg font-semibold text-ink">If the 3D client will not start</h2>
-      <p class="mt-2 text-sm leading-relaxed text-ink-dim">
-        It needs WebGL2, and a browser without it gets a blank page rather than a
-        polite error. The <a class="text-signal underline" href={LEGACY_CLIENT_URL}>older
-        browser client</a> is still running and still playable &mdash; its 3D panes are
-        optional, so it works where this one does not.
       </p>
     </div>
 

@@ -8,7 +8,7 @@ export const SITE = {
   name: "Blackout",
   tagline: "A cyberpunk MUD",
   description:
-    "Blackout is a cyberpunk Multi-User Dungeon (MUD): a text game with a 3D world beside it. Play from your browser. No download, no install.",
+    "Blackout is a cyberpunk Multi-User Dungeon (MUD): a text-based online role-playing game with an experimental 3D client. Play from your browser. No download, no install.",
   url: "https://playblackout.io",
 } as const;
 
@@ -37,15 +37,6 @@ export const SITE = {
  * points /play at a 404.
  */
 export const GAME_URL = "https://playblackout.io/client/";
-
-/**
- * The retired three.js webclient, still served and still working.
- *
- * Kept reachable on purpose: the Godot client is one canvas, so a browser
- * without working WebGL2 gets nothing at all, while this one degrades to its
- * text pane. See `muddev/blackout/web/static/webclient/js/README.md`.
- */
-export const LEGACY_CLIENT_URL = "https://game.playblackout.io/webclient/";
 
 /** Replace with a real invite once the server exists. */
 export const DISCORD_URL = "https://discord.gg/REPLACE-ME";
