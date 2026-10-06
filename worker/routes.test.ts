@@ -1,6 +1,7 @@
 /**
- * Purpose:  Guard the one fact this worker states twice -- which path prefixes
- *           R2 owns -- and the key mapping built on top of it.
+ * Purpose:  Guard the one fact this worker states twice -- which paths it
+ *           owns -- and the key mapping built on top of it. Also cover the
+ *           status route: what counts as "down", and the edge cache.
  *
  * Notes:    `R2_ROUTE_PREFIXES` in `index.ts` and `assets.run_worker_first` in
  *           `wrangler.jsonc` have to agree, and neither can read the other:
@@ -20,7 +21,9 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, it } from "node:test";
 
-import { R2_ROUTE_PREFIXES, r2Key } from "./index.ts";
+import worker, { R2_ROUTE_PREFIXES, r2Key } from "./index.ts";
+import { STATUS_CACHE_SECONDS, parseStatus } from "./status.ts";
+import { GAME_STATUS_URL, STATUS_API_PATH } from "../src/config.ts";
 
 const WRANGLER_CONFIG = fileURLToPath(new URL("../wrangler.jsonc", import.meta.url));
 
@@ -61,6 +64,7 @@ describe("the R2 route prefixes", () => {
             prefix.slice(0, -1),
             prefix + "*",
         ]);
+        expected.push(STATUS_API_PATH);
 
         deepStrictEqual([...configured].sort(), [...expected].sort());
     });
@@ -95,5 +99,119 @@ describe("r2Key", () => {
 
     it("does not claim a path that merely starts with the prefix name", () => {
         strictEqual(r2Key("/clientele/index.html"), null);
+    });
+});
+
+
+describe("parseStatus", () => {
+    it("reads an online body", () => {
+        deepStrictEqual(parseStatus({ online: true, players: 3 }), { online: true, players: 3 });
+        deepStrictEqual(parseStatus({ online: true, players: 0 }), { online: true, players: 0 });
+    });
+
+    it("calls every other shape offline", () => {
+        const offline = { online: false, players: null };
+        const bodies: unknown[] = [
+            null,
+            "<html>530</html>",
+            42,
+            {},
+            { online: false, players: 3 },
+            { online: "true", players: 3 },
+            { online: true },
+            { online: true, players: -1 },
+            { online: true, players: 1.5 },
+            { online: true, players: "3" },
+        ];
+
+        for (const body of bodies) {
+            deepStrictEqual(parseStatus(body), offline, JSON.stringify(body));
+        }
+    });
+});
+
+
+/**
+ * Purpose: Run the worker's status route with a stub game server and a stub
+ *          edge cache.
+ *
+ * Entry:   answer is what the stub `fetch` does for GAME_STATUS_URL: a
+ *          Response to give, or an Error to throw.
+ *
+ * Exit/Returns:
+ *          The worker's response, the number of probes the stub saw, and the
+ *          cache map, so a case can run the route again on a warm cache.
+ *
+ * Author & Date: Nick Hobar, 10/06/2026
+ */
+async function runStatus(answer: Response | Error, store = new Map<string, Response>()) {
+    const realFetch = globalThis.fetch;
+    const realCaches = (globalThis as any).caches;
+    let probes = 0;
+
+    globalThis.fetch = (async (input: RequestInfo | URL) => {
+        strictEqual(String(input), GAME_STATUS_URL);
+        probes += 1;
+        if (answer instanceof Error) {
+            throw answer;
+        }
+        return answer.clone();
+    }) as typeof fetch;
+
+    (globalThis as any).caches = {
+        default: {
+            match: async (key: Request) => store.get(key.url)?.clone(),
+            put: async (key: Request, value: Response) => {
+                store.set(key.url, value);
+            },
+        },
+    };
+
+    const pending: Promise<unknown>[] = [];
+    const ctx = { waitUntil: (p: Promise<unknown>) => pending.push(p) } as unknown as ExecutionContext;
+
+    try {
+        const request = new Request("https://playblackout.io" + STATUS_API_PATH + "?nocache=1");
+        const response = await worker.fetch(request, {} as Env, ctx);
+        await Promise.all(pending);
+
+        return { response, probes, store };
+    } finally {
+        globalThis.fetch = realFetch;
+        (globalThis as any).caches = realCaches;
+    }
+}
+
+
+describe("the status route", () => {
+    it("passes an online answer through, with the cache age", async () => {
+        const { response } = await runStatus(Response.json({ online: true, players: 2 }));
+
+        strictEqual(response.status, 200);
+        deepStrictEqual(await response.json(), { online: true, players: 2 });
+        strictEqual(response.headers.get("Cache-Control"), `public, max-age=${STATUS_CACHE_SECONDS}`);
+    });
+
+    it("says offline for a tunnel with no origin", async () => {
+        const tunnelDown = new Response("<html>Error 1033</html>", { status: 530 });
+        const { response } = await runStatus(tunnelDown);
+
+        strictEqual(response.status, 200);
+        deepStrictEqual(await response.json(), { online: false, players: null });
+    });
+
+    it("says offline when the probe throws", async () => {
+        const { response } = await runStatus(new Error("timed out"));
+
+        deepStrictEqual(await response.json(), { online: false, players: null });
+    });
+
+    it("probes one time and then answers from the cache, query string or not", async () => {
+        const first = await runStatus(Response.json({ online: true, players: 1 }));
+        const second = await runStatus(new Error("must not probe"), first.store);
+
+        strictEqual(first.probes, 1);
+        strictEqual(second.probes, 0);
+        deepStrictEqual(await second.response.json(), { online: true, players: 1 });
     });
 });

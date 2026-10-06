@@ -20,11 +20,15 @@
 		// with the 404 page first. Measured: the worker's redirect from `/client`
 		// to `/client/` was dead code until the slash-less entry existed, and
 		// `/client` is the URL a player is most likely to type by hand.
+		//
+		// `/api/status` is the endpoint of the status light. The worker answers
+		// it from the game server -- see `serveStatus` in worker/status.ts.
 		"run_worker_first": [
 			"/client",
 			"/client/*",
 			"/static/webclient/models",
-			"/static/webclient/models/*"
+			"/static/webclient/models/*",
+			"/api/status"
 		]
 	},
 	// ONE binding, not two. `wrangler r2 bucket create` offers to wire the new

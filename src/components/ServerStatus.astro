@@ -1,0 +1,138 @@
+---
+/**
+ * Purpose:  The status light of the game server, in the nav bar.
+ *
+ * Notes:    The page is static, so the light starts HIDDEN and the script
+ *           below shows it after the first answer. A browser with no
+ *           JavaScript sees no light, not a light stuck on "Checking".
+ *
+ *           It asks STATUS_API_PATH on this origin. The worker answers that
+ *           from the game server and caches it -- see `serveStatus` in
+ *           `worker/status.ts`. Under `astro dev` no worker runs, so the light
+ *           shows "Status unknown". That is the correct answer there.
+ *
+ *           Below the `sm` width only the dot shows. The label stays in the
+ *           accessibility tree (`sr-only`), so a screen reader still gets it.
+ */
+import { STATUS_API_PATH } from "../config";
+---
+
+<span
+  data-server-status
+  data-endpoint={STATUS_API_PATH}
+  data-state="checking"
+  role="status"
+  hidden
+  class="server-status inline-flex items-center gap-2 rounded-full border border-edge/70 px-2.5 py-1 font-mono text-xs text-ink-dim"
+>
+  <span class="dot h-2 w-2 shrink-0 rounded-full" aria-hidden="true"></span>
+  <span data-label class="sr-only sm:not-sr-only">Checking</span>
+</span>
+
+<style>
+  .server-status .dot {
+    background-color: var(--color-ink-faint);
+  }
+
+  .server-status[data-state="online"] .dot {
+    background-color: var(--color-signal);
+    box-shadow: 0 0 8px var(--color-signal);
+    animation: status-pulse 2.4s ease-in-out infinite;
+  }
+
+  .server-status[data-state="offline"] .dot {
+    background-color: var(--color-flare);
+  }
+
+  .server-status[data-state="online"] {
+    color: var(--color-ink);
+  }
+
+  @keyframes status-pulse {
+    50% {
+      opacity: 0.45;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .server-status[data-state="online"] .dot {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  /**
+   * One poll for every light on the page. The worker caches for 30 seconds,
+   * so a shorter poll would only read the same answer again.
+   */
+  const POLL_MS = 60_000;
+
+  type Status = { online: boolean; players: number | null };
+
+  /** The label for one answer. `null` means the worker did not answer. */
+  function labelFor(status: Status | null): string {
+    if (status === null) {
+      return "Status unknown";
+    }
+    if (!status.online) {
+      return "Offline";
+    }
+    if (status.players === null || status.players === 0) {
+      return "Online";
+    }
+    const noun = status.players === 1 ? "player" : "players";
+    return `Online · ${status.players} ${noun}`;
+  }
+
+  function stateFor(status: Status | null): string {
+    if (status === null) {
+      return "unknown";
+    }
+    return status.online ? "online" : "offline";
+  }
+
+  async function readStatus(endpoint: string): Promise<Status | null> {
+    try {
+      const response = await fetch(endpoint, { headers: { Accept: "application/json" } });
+      if (!response.ok) {
+        return null;
+      }
+      const status: Status = await response.json();
+      return status;
+    } catch {
+      return null;
+    }
+  }
+
+  async function refresh(): Promise<void> {
+    const lights = document.querySelectorAll<HTMLElement>("[data-server-status]");
+    const endpoint = lights[0]?.dataset.endpoint;
+
+    if (endpoint === undefined) {
+      return;
+    }
+
+    const status = await readStatus(endpoint);
+    const label = labelFor(status);
+
+    for (const light of lights) {
+      light.dataset.state = stateFor(status);
+      light.title = `Game server: ${label}`;
+      light.querySelector("[data-label]")!.textContent = label;
+      light.hidden = false;
+    }
+  }
+
+  refresh();
+  setInterval(() => {
+    if (document.visibilityState === "visible") {
+      refresh();
+    }
+  }, POLL_MS);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+      refresh();
+    }
+  });
+</script>

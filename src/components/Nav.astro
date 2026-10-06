@@ -1,5 +1,6 @@
 ---
 import { BRAND_MARK, SITE, NAV_LINKS } from "../config";
+import ServerStatus from "./ServerStatus.astro";
 
 const { pathname } = Astro.url;
 ---
@@ -26,26 +27,30 @@ const { pathname } = Astro.url;
       {SITE.name}
     </a>
 
-    <ul class="flex items-center gap-1 text-sm">
-      {
-        NAV_LINKS.map((link) => {
-          const isActive = pathname === link.href || pathname.startsWith(link.href + "/");
-          return (
-            <li>
-              <a
-                href={link.href}
-                aria-current={isActive ? "page" : undefined}
-                class:list={[
-                  "rounded-md px-3 py-2 transition hover:text-ink",
-                  isActive ? "text-signal" : "text-ink-dim",
-                ]}
-              >
-                {link.label}
-              </a>
-            </li>
-          );
-        })
-      }
-    </ul>
+    <div class="flex items-center gap-2 sm:gap-3">
+      <ServerStatus />
+
+      <ul class="flex items-center gap-1 text-sm">
+        {
+          NAV_LINKS.map((link) => {
+            const isActive = pathname === link.href || pathname.startsWith(link.href + "/");
+            return (
+              <li>
+                <a
+                  href={link.href}
+                  aria-current={isActive ? "page" : undefined}
+                  class:list={[
+                    "rounded-md px-3 py-2 transition hover:text-ink",
+                    isActive ? "text-signal" : "text-ink-dim",
+                  ]}
+                >
+                  {link.label}
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </div>
   </nav>
 </header>

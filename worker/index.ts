@@ -1,7 +1,8 @@
 /**
  * Purpose:  Serve the Godot web client and its model tree out of R2, at paths
- *           on this site's own origin. Everything else falls through to the
- *           static assets Astro built.
+ *           on this site's own origin. Answer the status light from the game
+ *           server. Everything else falls through to the static assets Astro
+ *           built.
  *
  * Notes:    WHY R2 AND NOT STATIC ASSETS. Cloudflare caps an individual static
  *           asset at 25 MiB, on the Free plan and the Paid plan alike -- it is
@@ -27,7 +28,12 @@
  *           carries the repeat visit instead: `must-revalidate` plus R2's ETag
  *           turns a returning player into a 304 with no body, which is the case
  *           that actually matters.
+ *
+ *           The status light is the one cached route. See `status.ts`.
  */
+
+import { STATUS_API_PATH } from "../src/config.ts";
+import { serveStatus } from "./status.ts";
 
 /**
  * Path prefixes this worker owns, each serving one R2 key space.
@@ -210,21 +216,26 @@ async function _serveObject(
 
 export default {
     /**
-     * Purpose: Route a request either to the R2 asset store or to the static
-     *          site Astro built.
+     * Purpose: Route a request to the status light, to the R2 asset store, or
+     *          to the static site Astro built.
      *
      * Entry:   No conditions.
      *
      * Exit/Returns:
-     *          The stored object for a path under R2_ROUTE_PREFIXES, a 405 for
-     *          a write method against one, and whatever the ASSETS binding says
-     *          for everything else -- including its configured 404 page.
+     *          The server status for STATUS_API_PATH, the stored object for a
+     *          path under R2_ROUTE_PREFIXES, a 405 for a write method against
+     *          either, and whatever the ASSETS binding says for everything
+     *          else -- including its configured 404 page.
      *
      * Author: Nick Hobar
      * Creation date: 08/27/2026
      */
-    async fetch(request: Request, env: Env): Promise<Response> {
+    async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
         const url = new URL(request.url);
+
+        if (url.pathname === STATUS_API_PATH) {
+            return serveStatus(request, ctx);
+        }
 
         const redirect = _directoryRedirect(url);
 

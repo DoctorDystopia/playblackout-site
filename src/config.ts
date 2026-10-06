@@ -38,6 +38,20 @@ export const SITE = {
  */
 export const GAME_URL = "https://playblackout.io/client/";
 
+/**
+ * The status light in the nav bar.
+ *
+ * The browser asks STATUS_API_PATH on this origin, never the game server. The
+ * worker asks GAME_STATUS_URL and caches the answer for a short time, so a
+ * page view never reaches the home PC. A direct fetch would also fail: the
+ * game server sends no `Access-Control-Allow-Origin`.
+ *
+ * GAME_STATUS_URL is `STATUS_PATH` in
+ * `muddev/blackout/systems/interface/serverstatus/status.py`.
+ */
+export const STATUS_API_PATH = "/api/status";
+export const GAME_STATUS_URL = "https://game.playblackout.io/status.json";
+
 /** Replace with a real invite once the server exists. */
 export const DISCORD_URL = "https://discord.gg/REPLACE-ME";
 
